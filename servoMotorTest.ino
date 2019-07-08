@@ -25,8 +25,9 @@ void Open_V() {
   for (pos = 0; pos <= 90; pos += 1) { // goes from 0 degrees to 180 degrees in steps of 1 degree
     myservo.write(pos);              // tell servo to go to position in variable 'pos'
     delay(delayTime);
-    pb1Val = 0;
     pos = 90;
+    pb1Val = 0;
+    Serial.println("In Open Loop");
     }
 }
 
@@ -35,24 +36,29 @@ void Close_V() {
   for (pos = 90; pos >= 0; pos -= 1) { // goes from 90 degrees to 0 degrees in steps of 1 degree
     myservo.write(pos);              // tell servo to go to position in variable 'pos'
     delay(delayTime);
-    pb2Val = 0;
     pos = 0;
+    pb2Val = 0;
+    Serial.println("In Close Loop");
     }
 }
 
 //Creates function for increasing pushbutton 1 variable
 void pb1_count() {
   pb1Val = pb1Val+1; 
+  Serial.println("In pb1 Count Loop");
+ 
 }
 //Creates function for increasing pushbutton 2 variable
 void pb2_count() {
   pb2Val = pb2Val+1; 
+  Serial.println("In pb2 Count Loop");
+ 
 }
 
 //////////////////////////////////////LOOP SECTION/////////////////////////////////////////////////
 void loop() {
 //Checks if pushbutton 1 is pulled low. If so, it increments +1.
-  if (digitalRead(p1Button) == LOW){
+  if (digitalRead(p1Button) == LOW && digitalRead(p2Button)== HIGH){
     delay(100);
     pb1_count();
     Serial.print("Pin1 Value");
@@ -60,6 +66,17 @@ void loop() {
   } 
   if (pb1Val >= 2){
     Open_V();
+    //delay(delayTime);
+  }
+//Checks if pushbutton 2 is pulled low. If so, it increments +1.
+  if (digitalRead(p2Button) == LOW && digitalRead(p1Button)== HIGH){
+    delay(100);
+    pb2_count();
+    Serial.print("Pin2 Value");
+    Serial.println(pb2Val);
+  } 
+  if (pb2Val >= 2){
+    Close_V();
     //delay(delayTime);
   }
 }
